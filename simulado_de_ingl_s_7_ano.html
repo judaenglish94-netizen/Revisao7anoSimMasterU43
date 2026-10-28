@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulado Interativo de Inglês - 7º Ano</title>
+  <style>
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #002147; /* Tom de azul extraído da imagem da logo MASTER */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #000;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Scrollbar Estilizada em Vermelho */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #dc2626;
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #b91c1c;
+    }
+
+    /* Header e Navegação */
+    header {
+      width: 100%;
+      max-width: 850px;
+      margin-bottom: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Logo Master */
+    .logo-master {
+      max-width: 180px;
+      height: auto;
+      margin-bottom: 15px;
+      border: 3px solid #dc2626;
+      border-radius: 10px;
+      padding: 5px;
+      background-color: #002147;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      color: #ffffff;
+      margin-bottom: 15px;
+      font-size: 1.8rem;
+    }
+
+    .nav-grid {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      border: 2px solid #ffffff;
+      background-color: #1e293b;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: #334155;
+    }
+
+    .nav-btn.active {
+      border-color: #f59e0b;
+      box-shadow: 0 0 8px #f59e0b;
+    }
+
+    .nav-btn.correct {
+      background-color: #16a34a !important;
+      border-color: #16a34a !important;
+      color: #fff;
+    }
+
+    .nav-btn.incorrect {
+      background-color: #dc2626 !important;
+      border-color: #dc2626 !important;
+      color: #fff;
+    }
+
+    /* Container Principal */
+    .container {
+      background-color: #ffffff;
+      border: 3px solid #dc2626;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 850px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+    }
+
+    .question-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #000;
+    }
+
+    /* Pinned Text (Texto Fixo para Questões 1 e 2) */
+    .pinned-text-box {
+      max-height: 200px;
+      overflow-y: auto;
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-left: 4px solid #dc2626;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #000;
+    }
+
+    .pinned-text-box h4 {
+      margin-bottom: 8px;
+      color: #dc2626;
+    }
+
+    /* Enunciado */
+    .statement {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      color: #000;
+      font-weight: 500;
+    }
+
+    /* Opções de Resposta */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 12px 15px;
+      border: 2px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+      background-color: #fff;
+    }
+
+    .option-item:hover {
+      background-color: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    .option-item input[type="radio"] {
+      margin-top: 4px;
+      margin-right: 12px;
+      cursor: pointer;
+    }
+
+    .option-text {
+      font-size: 1rem;
+      color: #000;
+      line-height: 1.4;
+    }
+
+    .option-item.selected {
+      border-color: #dc2626;
+      background-color: #fef2f2;
+    }
+
+    .option-item.correct-bg {
+      background-color: #dcfce7 !important;
+      border-color: #16a34a !important;
+    }
+
+    .option-item.incorrect-bg {
+      background-color: #fee2e2 !important;
+      border-color: #dc2626 !important;
+    }
+
+    /* Justificativa / Feedback */
+    .feedback-box {
+      display: none;
+      background-color: #f8fafc;
+      border-left: 4px solid #0284c7;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #000;
+    }
+
+    .feedback-box.show {
+      display: block;
+    }
+
+    .feedback-box strong {
+      color: #0284c7;
+    }
+
+    /* Botões de Ação na ordem: [ Next ] [ Check ] [ Previous ] */
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .btn {
+      background-color: #dc2626;
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      flex: 1;
+      max-width: 150px;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: #b91c1c;
+    }
+
+    .btn:disabled {
+      background-color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-finish {
+      background-color: #16a34a;
+      max-width: 200px;
+    }
+
+    .btn-finish:hover {
+      background-color: #15803d;
+    }
+
+    /* Modal de Resultado Final */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.75);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background-color: #ffffff;
+      border: 3px solid #dc2626;
+      border-radius: 10px;
+      max-width: 650px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 30px;
+      color: #000;
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+    }
+
+    .modal-header h2 {
+      color: #dc2626;
+      font-size: 1.8rem;
+    }
+
+    .score-display {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 15px;
+      color: #0f172a;
+    }
+
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      background-color: #f8fafc;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .stat-value.correct { color: #16a34a; }
+    .stat-value.incorrect { color: #dc2626; }
+
+    .diagnostics-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #0f172a;
+    }
+
+    .diagnostics-list {
+      list-style-type: disc;
+      padding-left: 20px;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .modal-footer {
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+      .action-buttons {
+        flex-direction: row;
+      }
+      .btn {
+        padding: 10px 8px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="master.png" alt="Logo Master" class="logo-master">
+    <h1>Simulado de Língua Inglesa - 7º Ano</h1>
+    <div class="nav-grid" id="nav-grid">
+      <!-- Botões de 1 a 10 gerados dinamicamente -->
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="question-header">
+      <span class="question-title" id="question-title">Questão 1 de 10</span>
+    </div>
+
+    <!-- Pinned Text (Exibido nas Questões 1 e 2) -->
+    <div class="pinned-text-box" id="pinned-text-box" style="display: none;">
+      <h4>Texto Base (Questões 1 e 2):</h4>
+      <p id="pinned-text-content"></p>
+    </div>
+
+    <!-- Enunciado -->
+    <div class="statement" id="statement-text">
+      <!-- Conteúdo da questão carregado aqui -->
+    </div>
+
+    <!-- Opções -->
+    <div class="options-list" id="options-list">
+      <!-- Alternativas carregadas aqui -->
+    </div>
+
+    <!-- Justificativa -->
+    <div class="feedback-box" id="feedback-box">
+      <strong>Justificativa:</strong> <span id="feedback-text"></span>
+    </div>
+
+    <!-- Botões de Ação na Ordem Obrigatória: [ Next ] [ Check ] [ Previous ] -->
+    <div class="action-buttons">
+      <button class="btn" id="btn-next" onclick="nextQuestion()">Next</button>
+      <button class="btn" id="btn-check" onclick="checkAnswer()">Check</button>
+      <button class="btn" id="btn-prev" onclick="prevQuestion()">Previous</button>
+    </div>
+  </main>
+
+  <!-- Modal de Resultado Final -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Resultado do Simulado</h2>
+      </div>
+      <div class="score-display" id="score-display">
+        Sua Nota: 0,0 / 10,0
+      </div>
+      <div class="stats-container">
+        <div class="stat-item">
+          <div>Acertos</div>
+          <div class="stat-value correct" id="stat-correct">0 (0%)</div>
+        </div>
+        <div class="stat-item">
+          <div>Erros</div>
+          <div class="stat-value incorrect" id="stat-incorrect">0 (0%)</div>
+        </div>
+      </div>
+      <div class="diagnostics-title">Diagnóstico e Recomendações Pedagógicas:</div>
+      <ul class="diagnostics-list" id="diagnostics-list">
+        <!-- Diagnóstico dinâmico em Português -->
+      </ul>
+      <div class="modal-footer">
+        <button class="btn btn-finish" onclick="restartQuiz()">Refazer Simulado</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // TEXTO BASE PARA AS QUESTÕES 1 E 2 (The 5 R's of Sustainability)
+    const textBase5Rs = `"Understanding the 5 R's of Sustainability"\n\n` +
+      `In recent years, schools and communities started important campaigns to protect our planet. The concept of the 5 R's—Refuse, Reduce, Reuse, Repurpose, and Recycle—helps people lower their daily environmental impact. Last semester, students at Green Valley School organized an eco-project to teach everyone about these guidelines.\n\n` +
+      `First, students learned to refuse unnecessary plastic bags at stores. Second, they reduced energy consumption by turning off unused lights. Third, they reused old water bottles instead of buying disposable ones. Fourth, they repurposed glass jars into flower pots for the school garden. Finally, they recycled paper and aluminum cans in proper bins. Every small action contributed to a cleaner school community.`;
+
+    // BASE DE DADOS DAS QUESTÕES DO 7º ANO
+    const rawQuestions = [
+      {
+        id: 1,
+        topic: "Compreensão Textual",
+        pinnedText: textBase5Rs,
+        statement: "Após a leitura atenta do texto sobre os 5 R's da sustentabilidade, assinale a alternativa que indica corretamente o principal objetivo do projeto realizado pelos estudantes:",
+        correctKey: "C",
+        options: {
+          A: "Construir uma nova fábrica para processar sacolas plásticas descartáveis.",
+          B: "Vender garrafas de vidro e latas de alumínio para arrecadar dinheiro.",
+          C: "Ensinar a comunidade escolar sobre ações práticas dos 5 R's para diminuir o impacto ambiental.",
+          D: "Aumentar o consumo de energia elétrica durante o período escolar.",
+          E: "Eliminar completamente o uso de papel nas salas de aula."
+        },
+        justification: "Resposta correta: C. O texto explica que os estudantes organizaram o eco-projeto para ensinar as diretrizes dos 5 R's (Refuse, Reduce, Reuse, Repurpose, Recycle) a fim de reduzir o impacto ambiental."
+      },
+      {
+        id: 2,
+        topic: "Identificação de Ação Finalizada (Simple Past)",
+        pinnedText: textBase5Rs,
+        statement: "Assinale a alternativa que traz uma frase do texto com um verbo no *Simple Past* indicando uma ação que transformou um objeto descartável em algo útil no jardim:",
+        correctKey: "B",
+        options: {
+          A: "<b>\"...students learned to refuse unnecessary plastic bags...\"</b>",
+          B: "<b>\"...they repurposed glass jars into flower pots for the school garden.\"</b>",
+          C: "<b>\"...they reduced energy consumption by turning off unused lights.\"</b>",
+          D: "<b>\"...they recycled paper and aluminum cans in proper bins.\"</b>",
+          E: "<b>\"The concept of the 5 R's helps people lower their daily environmental impact.\"</b>"
+        },
+        justification: "Resposta correta: B. O verbo regular 'repurposed' no Simple Past descreve a ação finalizada de dar uma nova utilidade (reaproveitar) aos potes de vidro transformando-os em vasos de flores."
+      },
+      {
+        id: 3,
+        topic: "Respostas com Wh-Words no Simple Past",
+        pinnedText: null,
+        statement: "Analise a seguinte pergunta sobre a feira de ecologia do colégio:\n\n" +
+          "<b>Teacher:</b> <i>\"Where did the volunteers collect the recyclable paper yesterday?\"</i>\n\n" +
+          "Assinale a opção com a resposta gramatical e contextual correta para a pergunta feita no <i>Simple Past</i>:",
+        correctKey: "A",
+        options: {
+          A: "They collected the recyclable paper in the school library.",
+          B: "Yes, they collected paper very fast.",
+          C: "They collect paper in the library every Friday.",
+          D: "Because the students needed extra boxes.",
+          E: "They will collect paper tomorrow morning."
+        },
+        justification: "Resposta correta: A. A palavra 'Where' exige a indicação de um local ('in the school library') com o verbo devidamente flexionado no passado simples ('collected')."
+      },
+      {
+        id: 4,
+        topic: "Respostas com Wh-Words no Simple Past",
+        pinnedText: null,
+        statement: "Leia o diálogo abaixo entre dois colegas de sala:\n\n" +
+          "<b>Sofia:</b> <i>\"When did your family start reducing plastic waste at home?\"</i>\n" +
+          "<b>Lucas:</b> <i>\"________________________________________\"</i>\n\n" +
+          "Marque a alternativa que completa a fala de Lucas de maneira correta segundo a estrutura do <i>Simple Past</i>:",
+        correctKey: "D",
+        options: {
+          A: "We start reducing plastic every single morning.",
+          B: "We are starting right now with reusable bags.",
+          C: "Because plastic is dangerous for animals.",
+          D: "We started reducing plastic two months ago.",
+          E: "We will start reducing plastic next year."
+        },
+        justification: "Resposta correta: D. A palavra 'When' solicita uma referência de tempo no passado. A opção 'We started... two months ago' emprega corretamente o passado simples ('started')."
+      },
+      {
+        id: 5,
+        topic: "Respostas com Wh-Words no Simple Past",
+        pinnedText: null,
+        statement: "Observe a questão feita por um repórter comunitário:\n\n" +
+          "<b>Reporter:</b> <i>\"What did the neighborhood council install in the park last weekend?\"</i>\n\n" +
+          "Assinale a resposta correta no <i>Simple Past</i>:",
+        correctKey: "E",
+        options: {
+          A: "They install new benches every spring season.",
+          B: "Yes, they installed many items around the park.",
+          C: "They were installing lights when we arrived.",
+          D: "They will install special trash bins next Sunday.",
+          E: "They installed new selective recycling bins."
+        },
+        justification: "Resposta correta: E. A pergunta com 'What' pede a identificação do objeto/ação realizada. A resposta correta usa o verbo no passado simples 'installed' acompanhado do objeto instalado ('new selective recycling bins')."
+      },
+      {
+        id: 6,
+        topic: "Regras e Estrutura do Simple Past",
+        pinnedText: null,
+        statement: "Sobre a construção de frases afirmativas, negativas e interrogativas no <i>Simple Past</i>, assinale a opção correta:",
+        correctKey: "C",
+        options: {
+          A: "Para formar a negativa de qualquer verbo no passado, adiciona-se apenas a palavra 'not' sem auxílio de verbos auxiliares.",
+          B: "Em perguntas com 'did', o verbo principal deve obrigatoriamente manter a terminação '-ed'.",
+          C: "Nas frases negativas e interrogativas com o auxiliar 'did/didn't', o verbo principal retorna à sua forma base.",
+          D: "O auxiliar 'did' é obrigatoriamente utilizado antes de verbos afirmativos regulares para indicar o tempo passado.",
+          E: "Todos os verbos no Simple Past utilizam 'was' ou 'were' como auxiliares negativos padrão."
+        },
+        justification: "Resposta correta: C. Na gramática do Simple Past, ao utilizar 'did' (interrogativa) ou 'didn't' (negativa), o verbo principal não recebe terminação de passado e permanece na sua forma base."
+      },
+      {
+        id: 7,
+        topic: "Uso do When no Simple Past / Past Continuous",
+        pinnedText: null,
+        statement: "Analise a seguinte frase:\n\n" +
+          "<b>\"The electricity went out WHEN the students were presenting their sustainability project.\"</b>\n\n" +
+          "Qual é a função gramatical e o sentido do uso do conector <b>WHEN</b> nessa oração?",
+        correctKey: "B",
+        options: {
+          A: "Indicar uma escolha entre duas ações totalmente futuras.",
+          B: "Introduzir um momento específico no passado em que uma ação pontual (went out) interrompeu/ocorreu durante uma ação em andamento (were presenting).",
+          C: "Explicar a causa de os alunos não terem feito o trabalho de sustentabilidade.",
+          D: "Conectar duas ações habituais do presente simples.",
+          E: "Substituir o uso do auxiliar 'did' em frases interrogativas diretas."
+        },
+        justification: "Resposta correta: B. A conjunção 'when' é empregada frequentemente para indicar um momento pontual no passado ( Simple Past: 'went out') que acontece no decorrer de uma ação contínua (Past Continuous: 'were presenting')."
+      },
+      {
+        id: 8,
+        topic: "Uso do While no Past Continuous",
+        pinnedText: null,
+        statement: "Considere a frase a seguir:\n\n" +
+          "<b>\"WHILE Clara was cleaning the beach, Carlos was sorting the recyclable plastic.\"</b>\n\n" +
+          "Assinale a alternativa que justifica CORRETAMENTE o uso da conjunção <b>WHILE</b> nessa frase:",
+        correctKey: "A",
+        options: {
+          A: "Conectar duas ações contínuas (Past Continuous) que estavam acontecendo simultaneamente no passado.",
+          B: "Indicar uma ação curta e única que aconteceu antes de qualquer outra atividade.",
+          C: "Expressar uma condição obrigatória para ações que acontecem no futuro.",
+          D: "Substituir a conjunção 'because' para dar uma explicação de causa e efeito.",
+          E: "Mostrar que Clara limpou a praia muito depois de Carlos terminar sua tarefa."
+        },
+        justification: "Resposta correta: A. A conjunção 'while' (enquanto) é usada para introduzir e conectar duas ações contínuas que ocorriam ao mesmo tempo no passado (ações simultâneas em Past Continuous)."
+      },
+      {
+        id: 9,
+        topic: "Diferenciação entre When e While",
+        pinnedText: null,
+        statement: "Preencha adequadamente as lacunas da frase abaixo:\n\n" +
+          "<i>\"My father found an old reusable bottle __________ he was working in the garden, and he stopped __________ I called him.\"</i>\n\n" +
+          "Assinale a sequência gramaticalmente correta para preencher os espaços:",
+        correctKey: "D",
+        options: {
+          A: "when / while",
+          B: "while / while",
+          C: "when / when",
+          D: "while / when",
+          E: "because / while"
+        },
+        justification: "Resposta correta: D. Utiliza-se 'while' antes da ação prolongada no Past Continuous ('while he was working...') e 'when' antes da ação pontual no Simple Past ('when I called him')."
+      },
+      {
+        id: 10,
+        topic: "Uso do When e While em Contexto",
+        pinnedText: null,
+        statement: "Observe as duas frases escritas por um aluno:\n\n" +
+          "1. <i>\"We were picking up trash on the street <b>WHEN</b> it started to rain heavily.\"</i>\n" +
+          "2. <i>\"<b>WHILE</b> we were picking up trash on the street, it started to rain heavily.\"</i>\n\n" +
+          "Analisando o uso de <b>WHEN</b> e <b>WHILE</b> nas frases acima, assinale a conclusão CORRETA:",
+        correctKey: "E",
+        options: {
+          A: "Apenas a frase 1 está gramaticalmente correta; a frase 2 contém erro no uso de 'while'.",
+          B: "Apenas a frase 2 está correta, pois 'when' não pode ser usado com o Simple Past.",
+          C: "Ambas as frases possuem significados opostos e contraditórios sobre a chuva.",
+          D: "O uso de 'when' na frase 1 exige que o verbo 'started' vá para o gerúndio (-ing).",
+          E: "Ambas as frases estão gramaticalmente corretas e transmitem a mesma ideia, variando apenas a posição da conjunção e da oração que ela introduz."
+        },
+        justification: "Resposta correta: E. 'When' geralmente introduz a oração no Simple Past ('when it started...') e 'While' introduz a oração no Past Continuous ('while we were picking...'). Ambas descrevem corretamente a mesma situação no passado."
+      }
+    ];
+
+    // ESTADO DA APLICAÇÃO E EMBARALHAMENTO DO GABARITO
+    let processedQuestions = [];
+    let userAnswers = {}; // { questionIndex: selectedLetter }
+    let checkedQuestions = {}; // { questionIndex: boolean }
+    let currentQuestionIndex = 0;
+
+    // Função de Embaralhamento (Fisher-Yates)
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Inicialização e Embaralhamento das Opções para garantir imprevisibilidade do gabarito
+    function initQuizData() {
+      processedQuestions = rawQuestions.map((q) => {
+        const originalKeys = ['A', 'B', 'C', 'D', 'E'];
+        const optionsList = originalKeys.map(key => ({
+          originalKey: key,
+          text: q.options[key]
+        }));
+
+        // Embaralhar a ordem das alternativas
+        const shuffledOptions = shuffleArray(optionsList);
+
+        // Reatribuir rótulos A, B, C, D, E e identificar o novo gabarito
+        const newLetterLabels = ['A', 'B', 'C', 'D', 'E'];
+        let mappedCorrectLetter = '';
+
+        const finalOptions = shuffledOptions.map((opt, index) => {
+          const currentLabel = newLetterLabels[index];
+          if (opt.originalKey === q.correctKey) {
+            mappedCorrectLetter = currentLabel;
+          }
+          return {
+            label: currentLabel,
+            text: opt.text,
+            originalKey: opt.originalKey
+          };
+        });
+
+        return {
+          ...q,
+          displayOptions: finalOptions,
+          correctDisplayLetter: mappedCorrectLetter
+        };
+      });
+    }
+
+    // RENDERIZAÇÃO DA INTERFACE
+    function buildNavGrid() {
+      const navGrid = document.getElementById('nav-grid');
+      navGrid.innerHTML = '';
+      for (let i = 0; i < processedQuestions.length; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'nav-btn';
+        btn.id = `nav-btn-${i}`;
+        btn.innerText = i + 1;
+        btn.onclick = () => jumpToQuestion(i);
+        navGrid.appendChild(btn);
+      }
+      updateNavStatus();
+    }
+
+    function updateNavStatus() {
+      for (let i = 0; i < processedQuestions.length; i++) {
+        const btn = document.getElementById(`nav-btn-${i}`);
+        btn.classList.remove('active', 'correct', 'incorrect');
+
+        if (i === currentQuestionIndex) {
+          btn.classList.add('active');
+        }
+
+        if (checkedQuestions[i]) {
+          const isCorrect = userAnswers[i] === processedQuestions[i].correctDisplayLetter;
+          if (isCorrect) {
+            btn.classList.add('correct');
+          } else {
+            btn.classList.add('incorrect');
+          }
+        }
+      }
+    }
+
+    function renderQuestion(index) {
+      const q = processedQuestions[index];
+
+      // Atualizar Título da Questão
+      document.getElementById('question-title').innerText = `Questão ${index + 1} de 10`;
+
+      // Pinned Text Box (Exibido nas Questões 1 e 2)
+      const pinnedBox = document.getElementById('pinned-text-box');
+      const pinnedContent = document.getElementById('pinned-text-content');
+      if (q.pinnedText) {
+        pinnedContent.innerText = q.pinnedText;
+        pinnedBox.style.display = 'block';
+      } else {
+        pinnedBox.style.display = 'none';
+      }
+
+      // Enunciado sem metadados pedagógicos
+      document.getElementById('statement-text').innerHTML = q.statement.replace(/\n/g, '<br>');
+
+      // Lista de Opções
+      const optionsContainer = document.getElementById('options-list');
+      optionsContainer.innerHTML = '';
+
+      const isChecked = checkedQuestions[index];
+
+      q.displayOptions.forEach((opt) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'option-item';
+
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = `option-${index}`;
+        radio.value = opt.label;
+        radio.id = `opt-${opt.label}`;
+        radio.disabled = !!isChecked;
+
+        if (userAnswers[index] === opt.label) {
+          radio.checked = true;
+          itemDiv.classList.add('selected');
+        }
+
+        if (isChecked) {
+          if (opt.label === q.correctDisplayLetter) {
+            itemDiv.classList.add('correct-bg');
+          } else if (userAnswers[index] === opt.label) {
+            itemDiv.classList.add('incorrect-bg');
+          }
+        } else {
+          itemDiv.onclick = () => selectOption(index, opt.label);
+        }
+
+        const labelSpan = document.createElement('span');
+        labelSpan.className = 'option-text';
+        labelSpan.innerHTML = `<strong>${opt.label})</strong> ${opt.text}`;
+
+        itemDiv.appendChild(radio);
+        itemDiv.appendChild(labelSpan);
+        optionsContainer.appendChild(itemDiv);
+      });
+
+      // Justificativa / Feedback
+      const feedbackBox = document.getElementById('feedback-box');
+      const feedbackText = document.getElementById('feedback-text');
+      if (isChecked) {
+        let textJust = q.justification;
+        textJust = textJust.replace(/Resposta correta: [A-E]\./, `Resposta correta: ${q.correctDisplayLetter}.`);
+        feedbackText.innerText = textJust;
+        feedbackBox.classList.add('show');
+      } else {
+        feedbackBox.classList.remove('show');
+      }
+
+      // Estado dos Botões
+      const btnCheck = document.getElementById('btn-check');
+      btnCheck.disabled = !userAnswers[index] || isChecked;
+
+      const btnNext = document.getElementById('btn-next');
+      if (index === processedQuestions.length - 1) {
+        btnNext.innerText = 'Finish';
+        btnNext.classList.add('btn-finish');
+      } else {
+        btnNext.innerText = 'Next';
+        btnNext.classList.remove('btn-finish');
+      }
+
+      const btnPrev = document.getElementById('btn-prev');
+      btnPrev.disabled = index === 0;
+
+      updateNavStatus();
+    }
+
+    // AÇÕES DO USUÁRIO
+    function selectOption(qIndex, label) {
+      if (checkedQuestions[qIndex]) return;
+      userAnswers[qIndex] = label;
+
+      const items = document.querySelectorAll('.option-item');
+      items.forEach(item => item.classList.remove('selected'));
+
+      const radio = document.getElementById(`opt-${label}`);
+      if (radio) {
+        radio.checked = true;
+        radio.closest('.option-item').classList.add('selected');
+      }
+
+      document.getElementById('btn-check').disabled = false;
+    }
+
+    function checkAnswer() {
+      if (!userAnswers[currentQuestionIndex]) return;
+      checkedQuestions[currentQuestionIndex] = true;
+      renderQuestion(currentQuestionIndex);
+    }
+
+    function jumpToQuestion(index) {
+      currentQuestionIndex = index;
+      renderQuestion(currentQuestionIndex);
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIndex < processedQuestions.length - 1) {
+        currentQuestionIndex++;
+        renderQuestion(currentQuestionIndex);
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderQuestion(currentQuestionIndex);
+      }
+    }
+
+    // AVALIAÇÃO E RELATÓRIO FINAL
+    function finishQuiz() {
+      let totalCorrect = 0;
+      let topicErrors = {};
+      let topicTotals = {};
+
+      processedQuestions.forEach((q, idx) => {
+        const topic = q.topic;
+        if (!topicTotals[topic]) {
+          topicTotals[topic] = 0;
+          topicErrors[topic] = 0;
+        }
+        topicTotals[topic]++;
+
+        const userAns = userAnswers[idx];
+        if (userAns === q.correctDisplayLetter) {
+          totalCorrect++;
+        } else {
+          topicErrors[topic]++;
+        }
+      });
+
+      const totalQuestions = processedQuestions.length;
+      const totalIncorrect = totalQuestions - totalCorrect;
+      // Ajustado para o total valer 10,0 pontos (1,0 por questão)
+      const score = (totalCorrect * 1.0).toFixed(1);
+
+      const correctPct = Math.round((totalCorrect / totalQuestions) * 100);
+      const incorrectPct = Math.round((totalIncorrect / totalQuestions) * 100);
+
+      document.getElementById('score-display').innerText = `Sua Nota: ${score.replace('.', ',')} / 10,0`;
+      document.getElementById('stat-correct').innerText = `${totalCorrect} (${correctPct}%)`;
+      document.getElementById('stat-incorrect').innerText = `${totalIncorrect} (${incorrectPct}%)`;
+
+      // Diagnóstico Pedagógico em Português para erros > 30%
+      const diagnosticsList = document.getElementById('diagnostics-list');
+      diagnosticsList.innerHTML = '';
+
+      let needsRevision = false;
+
+      for (const topic in topicTotals) {
+        const errors = topicErrors[topic];
+        const total = topicTotals[topic];
+        const errorPct = (errors / total) * 100;
+
+        if (errorPct > 30) {
+          needsRevision = true;
+          const li = document.createElement('li');
+          let recommendationText = "";
+
+          if (topic === "Compreensão Textual") {
+            recommendationText = "<strong>Compreensão Textual:</strong> Reforçar a leitura de textos informativos sobre sustentabilidade para identificar a ideia central e detalhes específicos.";
+          } else if (topic.includes("Wh-Words") || topic.includes("Simple Past")) {
+            recommendationText = "<strong>Simple Past e Wh-Words:</strong> Estudar a estrutura de perguntas e respostas no passado simples utilizando <i>Wh-Words</i> e flexão verbal adequada.";
+          } else if (topic.includes("When") || topic.includes("While") || topic.includes("Past Continuous")) {
+            recommendationText = "<strong>Uso de When e While:</strong> Revisar o uso de <i>when</i> para ações pontuais (Simple Past) e <i>while</i> para ações contínuas/simultâneas (Past Continuous).";
+          } else {
+            recommendationText = `<strong>${topic}:</strong> Recomenda-se reforçar este conteúdo através de novos exercícios práticos.`;
+          }
+
+          li.innerHTML = recommendationText;
+          diagnosticsList.appendChild(li);
+        }
+      }
+
+      if (!needsRevision) {
+        const li = document.createElement('li');
+        li.innerHTML = "<strong>Parabéns!</strong> Você apresentou um excelente desempenho em todos os tópicos (taxa de erro inferior a 30%). Continue praticando!";
+        diagnosticsList.appendChild(li);
+      }
+
+      document.getElementById('modal-overlay').style.display = 'flex';
+    }
+
+    function restartQuiz() {
+      userAnswers = {};
+      checkedQuestions = {};
+      currentQuestionIndex = 0;
+      document.getElementById('modal-overlay').style.display = 'none';
+      initQuizData();
+      buildNavGrid();
+      renderQuestion(0);
+    }
+
+    // Inicialização do aplicativo
+    window.onload = function() {
+      initQuizData();
+      buildNavGrid();
+      renderQuestion(0);
+    };
+  </script>
+</body>
+</html>
